@@ -7,46 +7,90 @@
 .atom/
 .build/
 .buildlog/
-.history
+.history/
 .svn/
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# IDE
 *.iml
 *.ipr
 *.iws
 .idea/
+.vscode/
+*.code-workspace
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# Archives / local dumps
+*.zip
+lib.zip
 
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+# Environment & secrets (never commit)
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+**/key.properties
+**/*.keystore
+**/*.jks
+
+# App API keys (copy from *.example.dart)
+lib/core/config/angel_one_config.dart
+lib/core/config/news_config.local.dart
+
+# Firebase / Google (use CI or local setup; add your own copies)
+**/google-services.json
+**/GoogleService-Info.plist
+firebase_app_id_file.json
+.firebaserc.local
+
+# Flutter / Dart
 .dart_tool/
-.flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
+**/doc/api/
+.flutter-plugins
+.flutter-plugins-dependencies
+build/
+**/build/
 /coverage/
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
+# Android
+**/local.properties
 /android/app/debug
 /android/app/profile
 /android/app/release
-.env
+/android/.gradle/
+/android/captures/
+
+# iOS / macOS
+**/Pods/
+**/.symlinks/
+**/Flutter/ephemeral/
+**/xcuserdata/
+**/.generated/
+
+# Windows / Linux generated
+**/flutter/ephemeral/
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Python (root + backend)
+.venv/
 venv/
-build/
-*.pyc
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
+nevark_backend/venv/
+nevark_backend/.venv/
+__pycache__/
+*.py[cod]
+.Python
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+
+# OS
+Thumbs.db
+ehthumbs.db
+Desktop.ini
