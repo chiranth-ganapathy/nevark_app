@@ -10,7 +10,7 @@ import '../../services/prediction_service.dart';
 import '../stock/stock_detail_screen.dart';
 
 List<Map<String, String>> get kAllNseStocks => kNseTokens.keys
-    .where((s) => !kPrimaryIndexKeys.contains(s))
+    .where((s) => !kAllIndexKeys.contains(s))
     .map((sym) => {'sym': sym, 'name': sym})
     .toList();
 
@@ -138,7 +138,7 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
           ),
           actions: [
             IconButton(
-              icon: const Icon(
+              icon: Icon(
                 Icons.add_circle_outline_rounded,
                 color: AppColors.cyan,
                 size: 26,
@@ -204,22 +204,22 @@ class _WatchlistScreenState extends State<WatchlistScreen> {
                                   color: AppColors.cyan.withOpacity(0.3),
                                 ),
                               ),
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.add, color: AppColors.cyan, size: 13),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Add',
-                                    style: TextStyle(
-                                      fontFamily: 'Space Mono',
-                                      fontSize: 10,
-                                      color: AppColors.cyan,
-                                      fontWeight: FontWeight.w700,
+                              child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(Icons.add, color: AppColors.cyan, size: 13),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      'Add',
+                                      style: TextStyle(
+                                        fontFamily: 'Space Mono',
+                                        fontSize: 10,
+                                        color: AppColors.cyan,
+                                        fontWeight: FontWeight.w700,
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ],
+                                ),
                             ),
                           ),
                         ],
@@ -381,7 +381,7 @@ class _WatchCard extends StatelessWidget {
                 ),
               )
             else
-              const SizedBox(
+              SizedBox(
                 width: 16,
                 height: 16,
                 child: CircularProgressIndicator(
@@ -418,7 +418,7 @@ class _WatchCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(color: AppColors.red.withOpacity(0.3)),
         ),
-        child: const Icon(Icons.delete_outline_rounded, color: AppColors.red, size: 24),
+        child: Icon(Icons.delete_outline_rounded, color: AppColors.red, size: 24),
       ),
       child: GestureDetector(
         onTap: onTap,
@@ -564,7 +564,7 @@ class _WatchCard extends StatelessWidget {
                     ),
                     child: Text(
                       'RSI ${pred.rsiValue.toStringAsFixed(0)} · ${pred.rsiLabel}',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontFamily: 'Space Mono',
                         fontSize: 9,
                         color: AppColors.cyan,
@@ -591,6 +591,38 @@ class _WatchCard extends StatelessWidget {
                       fontFamily: 'Space Mono',
                       fontSize: 9,
                       color: AppColors.textMuted,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 10),
+              Divider(color: AppColors.cardBorder, height: 1),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton.icon(
+                    onPressed: quote == null
+                        ? null
+                        : () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => StockDetailScreen(quote: quote!),
+                              ),
+                            ),
+                    icon: Icon(Icons.auto_graph_rounded, color: AppColors.cyan),
+                    label: Text(
+                      'Analyze Stock',
+                      style: TextStyle(
+                        fontFamily: 'Syne',
+                        fontSize: 12,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.cyan,
+                      ),
+                    ),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppColors.cyan,
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     ),
                   ),
                 ],
@@ -729,7 +761,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                   decoration: InputDecoration(
                     hintText: 'Search live NSE symbols...',
                     hintStyle: TextStyle(color: AppColors.textMuted),
-                    prefixIcon: const Icon(Icons.search, color: AppColors.cyan),
+                    prefixIcon: Icon(Icons.search, color: AppColors.cyan),
                     filled: true,
                     fillColor: const Color(0xFF0D1620),
                     border: OutlineInputBorder(
@@ -781,7 +813,7 @@ class _SearchSheetState extends State<_SearchSheet> {
                             )
                           : GestureDetector(
                               onTap: () => widget.onAdd(sym),
-                              child: const Text(
+                              child: Text(
                                 '+ Add',
                                 style: TextStyle(
                                   fontFamily: 'Space Mono',

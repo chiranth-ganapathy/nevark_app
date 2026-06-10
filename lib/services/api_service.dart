@@ -17,10 +17,34 @@ const Duration kLiveRefreshInterval = Duration(seconds: 5);
 
 const List<String> kPrimaryIndexKeys = ['NIFTY', 'BANKNIFTY', 'FINNIFTY'];
 
+const List<String> kAllIndexKeys = [
+  'NIFTY',
+  'BANKNIFTY',
+  'FINNIFTY',
+  'SENSEX',
+  'NIFTY_NEXT_50',
+  'NIFTY_MIDCAP',
+  'NIFTY_SMALLCAP',
+  'NIFTY_IT',
+  'NIFTY_BANK',
+  'NIFTY_PHARMA',
+  'NIFTY_AUTO',
+  'NIFTY_FMCG',
+];
+
 const Map<String, String> kNseTokens = {
   'NIFTY': '99926000',
   'BANKNIFTY': '99926009',
   'FINNIFTY': '99926037',
+  'SENSEX': '99919000',
+  'NIFTY_NEXT_50': '99926013',
+  'NIFTY_MIDCAP': '99926011',
+  'NIFTY_SMALLCAP': '99926032',
+  'NIFTY_IT': '99926008',
+  'NIFTY_BANK': '99926009',
+  'NIFTY_PHARMA': '99926023',
+  'NIFTY_AUTO': '99926029',
+  'NIFTY_FMCG': '99926021',
   'TCS': '11536',
   'INFY': '1594',
   'WIPRO': '3787',
@@ -95,7 +119,8 @@ const Map<String, String> kNseTokens = {
 };
 
 final Map<String, String> _tokenToSym = {
-  for (final e in kNseTokens.entries) e.value: e.key,
+  for (final e in kNseTokens.entries)
+    if (e.key != 'NIFTY_BANK') e.value: e.key,
 };
 
 const Map<String, String> _aoIndexNames = {
@@ -106,6 +131,23 @@ const Map<String, String> _aoIndexNames = {
   'NIFTY BANK': 'BANKNIFTY',
   'NIFTY FIN SERVICE': 'FINNIFTY',
   'Nifty Financial Services': 'FINNIFTY',
+  'SENSEX': 'SENSEX',
+  'S&P BSE SENSEX': 'SENSEX',
+  'Nifty Next 50': 'NIFTY_NEXT_50',
+  'NIFTY NEXT 50': 'NIFTY_NEXT_50',
+  'NIFTYNXT50': 'NIFTY_NEXT_50',
+  'Nifty Midcap 100': 'NIFTY_MIDCAP',
+  'NIFTY MIDCAP 100': 'NIFTY_MIDCAP',
+  'Nifty SMLCAP 100': 'NIFTY_SMALLCAP',
+  'NIFTY SMLCAP 100': 'NIFTY_SMALLCAP',
+  'Nifty IT': 'NIFTY_IT',
+  'NIFTY IT': 'NIFTY_IT',
+  'Nifty Pharma': 'NIFTY_PHARMA',
+  'NIFTY PHARMA': 'NIFTY_PHARMA',
+  'Nifty Auto': 'NIFTY_AUTO',
+  'NIFTY AUTO': 'NIFTY_AUTO',
+  'Nifty FMCG': 'NIFTY_FMCG',
+  'NIFTY FMCG': 'NIFTY_FMCG',
 };
 
 const Map<String, List<String>> kSectorStocks = {
@@ -354,7 +396,23 @@ Future<List<StockQuote>> _fetchQuotes(List<String> symbols) async {
         if (sym.isEmpty) continue;
 
         final q = StockQuote.fromAngelOne(d, symbolHint: sym);
-        if (q.ltp > 0) allQuotes.add(q);
+        if (q.ltp > 0) {
+          allQuotes.add(q);
+          if (sym == 'BANKNIFTY') {
+            allQuotes.add(StockQuote(
+              symbol: 'NIFTY_BANK',
+              name: 'Nifty Bank',
+              ltp: q.ltp,
+              open: q.open,
+              high: q.high,
+              low: q.low,
+              close: q.close,
+              change: q.change,
+              changePercent: q.changePercent,
+              volume: q.volume,
+            ));
+          }
+        }
       }
     } catch (e) {
       debugPrint('[ApiService] Fetch error: $e');
@@ -377,7 +435,7 @@ class ApiService {
       kSectorStocks.values.expand((e) => e).toSet().toList();
 
   static List<String> get _allSyms => {
-        ...kPrimaryIndexKeys,
+        ...kAllIndexKeys,
         ..._stockSyms,
         ..._extraSymbols,
       }.toList();
@@ -514,7 +572,7 @@ class ApiService {
     if (query.isEmpty) return [];
     final q = query.toUpperCase();
     return kNseTokens.keys
-        .where((s) => !kPrimaryIndexKeys.contains(s) && s.contains(q))
+        .where((s) => !kAllIndexKeys.contains(s) && s.contains(q))
         .take(20)
         .toList();
   }

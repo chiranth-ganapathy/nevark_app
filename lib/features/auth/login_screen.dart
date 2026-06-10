@@ -99,7 +99,7 @@ class _LoginScreenState extends State<LoginScreen>
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.cyan, width: 1.5),
+        borderSide: BorderSide(color: AppColors.cyan, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -189,7 +189,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   ),
                                 ],
                               ),
-                              child: const Icon(
+                              child: Icon(
                                 Icons.trending_up_rounded,
                                 color: AppColors.cyan,
                                 size: 22,
@@ -236,8 +236,8 @@ class _LoginScreenState extends State<LoginScreen>
                         // Email field
                         TextFormField(
                           controller: _email,
-                          style: const TextStyle(
-                              color: AppColors.textPrimary, fontSize: 14),
+                            style: TextStyle(
+                                color: AppColors.textPrimary, fontSize: 14),
                           decoration: _inputDeco(
                               'Email address', Icons.mail_outline_rounded),
                           keyboardType: TextInputType.emailAddress,
@@ -251,7 +251,7 @@ class _LoginScreenState extends State<LoginScreen>
                         TextFormField(
                           controller: _password,
                           obscureText: _obscure,
-                          style: const TextStyle(
+                            style: TextStyle(
                               color: AppColors.textPrimary, fontSize: 14),
                           decoration: _inputDeco(
                             'Password',
@@ -283,7 +283,7 @@ class _LoginScreenState extends State<LoginScreen>
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 4, vertical: 8),
                             ),
-                            child: const Text(
+                            child: Text(
                               'Forgot password?',
                               style: TextStyle(
                                 color: AppColors.cyan,
@@ -340,7 +340,7 @@ class _LoginScreenState extends State<LoginScreen>
                               ),
                             ),
                             child: _loading
-                                ? const SizedBox(
+                                ? SizedBox(
                                     width: 20,
                                     height: 20,
                                     child: CircularProgressIndicator(
@@ -400,14 +400,14 @@ class _LoginScreenState extends State<LoginScreen>
                                 MaterialPageRoute(
                                     builder: (_) => const SignupScreen()),
                               ),
-                              child: const Text(
-                                'Sign up',
-                                style: TextStyle(
-                                  color: AppColors.cyan,
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w700,
+                              child: Text(
+                                  'Sign up',
+                                  style: TextStyle(
+                                    color: AppColors.cyan,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                  ),
                                 ),
-                              ),
                             ),
                           ],
                         ),

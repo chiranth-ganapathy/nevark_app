@@ -12,7 +12,7 @@ class AppLoadingState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
+          SizedBox(
             width: 28,
             height: 28,
             child: CircularProgressIndicator(
@@ -64,8 +64,8 @@ class AppErrorState extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: AppColors.red.withValues(alpha: 0.3)),
             ),
-            child: const Icon(Icons.error_outline_rounded,
-                color: AppColors.red, size: 28),
+            child: Icon(Icons.error_outline_rounded,
+              color: AppColors.red, size: 28),
           ),
           const SizedBox(height: 16),
           Text(
@@ -82,7 +82,7 @@ class AppErrorState extends StatelessWidget {
             const SizedBox(height: 20),
             TextButton.icon(
               onPressed: onRetry,
-              icon: const Icon(Icons.refresh_rounded, size: 16),
+              icon: Icon(Icons.refresh_rounded, size: 16),
               label: Text(retryLabel ?? 'Try again'),
               style: TextButton.styleFrom(foregroundColor: AppColors.cyan),
             ),

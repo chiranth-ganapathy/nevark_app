@@ -11,8 +11,8 @@ import 'news_pipeline_log.dart';
 import 'yahoo_news_provider.dart';
 
 const Duration _kCacheTtl = Duration(minutes: 15);
-const String _kCacheKey = 'news_cache_v6';
-const String _kCacheTsKey = 'news_cache_ts_v6';
+const String _kCacheKey = 'news_cache_v5';
+const String _kCacheTsKey = 'news_cache_ts_v5';
 
 /// Legacy cache keys — cleared on upgrade so stale data cannot block the UI.
 const _legacyCacheKeys = [
@@ -20,8 +20,6 @@ const _legacyCacheKeys = [
   'news_cache_ts_v3',
   'news_cache_v4',
   'news_cache_ts_v4',
-  'news_cache_v5',
-  'news_cache_ts_v5',
 ];
 
 class NewsServiceException implements Exception {

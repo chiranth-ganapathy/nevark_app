@@ -64,7 +64,7 @@ class _AboutScreenState extends State<AboutScreen>
         backgroundColor: AppColors.bg,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded,
+          icon: Icon(Icons.arrow_back_ios_rounded,
               color: AppColors.cyan, size: 18),
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -96,38 +96,38 @@ class _AboutScreenState extends State<AboutScreen>
                       ),
                       child: Center(
                         child: RichText(
-                          text: const TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Ne',
-                                style: TextStyle(
-                                  fontFamily: 'Syne',
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: 'Ne',
+                                  style: TextStyle(
+                                    fontFamily: 'Syne',
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: 'V',
-                                style: TextStyle(
-                                  fontFamily: 'Syne',
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppColors.cyan,
+                                TextSpan(
+                                  text: 'V',
+                                  style: TextStyle(
+                                    fontFamily: 'Syne',
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: AppColors.cyan,
+                                  ),
                                 ),
-                              ),
-                              TextSpan(
-                                text: 'ark',
-                                style: TextStyle(
-                                  fontFamily: 'Syne',
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w800,
-                                  color: Colors.white,
+                                TextSpan(
+                                  text: 'ark',
+                                  style: TextStyle(
+                                    fontFamily: 'Syne',
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w800,
+                                    color: Colors.white,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -183,7 +183,7 @@ class _AboutScreenState extends State<AboutScreen>
                       children: [
                         _CardLabel('What is NeVark?', AppColors.cyan),
                         const SizedBox(height: 10),
-                        const Text(
+                        Text(
                           'NeVark is an AI-powered Decision Intelligence Platform built for Indian retail investors. '
                           'It combines real-time NSE market data, technical analysis, AI-driven predictions, '
                           'and live sentiment from market news — all in one place.',
@@ -209,13 +209,13 @@ class _AboutScreenState extends State<AboutScreen>
                           label: 'Organisation',
                           value: 'Nevark Technologies LLP',
                         ),
-                        const Divider(color: AppColors.cardBorder, height: 20),
+                        Divider(color: AppColors.cardBorder, height: 20),
                         _InfoRow(
                           icon: Icons.location_on_rounded,
                           label: 'Market',
                           value: 'National Stock Exchange (NSE), India',
                         ),
-                        const Divider(color: AppColors.cardBorder, height: 20),
+                        Divider(color: AppColors.cardBorder, height: 20),
                         _InfoRow(
                           icon: Icons.verified_rounded,
                           label: 'Data Source',
@@ -249,7 +249,7 @@ class _AboutScreenState extends State<AboutScreen>
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Icon(Icons.info_outline_rounded,
+                        Icon(Icons.info_outline_rounded,
                           color: AppColors.amber, size: 16),
                       const SizedBox(width: 10),
                       Expanded(
@@ -354,7 +354,7 @@ class _InfoRow extends StatelessWidget {
             )),
         const SizedBox(height: 2),
         Text(value,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               color: AppColors.textPrimary,
               fontWeight: FontWeight.w500,
@@ -387,7 +387,7 @@ class _FeatureRow extends StatelessWidget {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
+            style: TextStyle(
                 fontSize: 12, color: AppColors.textPrimary, height: 1.4),
           ),
         ),

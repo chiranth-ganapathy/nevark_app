@@ -513,7 +513,6 @@ class LstmForecast {
  
     // Confidence intervals (wider for volatile stocks)
     final conf   = (0.65 + (n / 100) * 0.15).clamp(0.55, 0.82);
-    final band5  = atr * math.sqrt(5)  * volMul;
     final band30 = atr * math.sqrt(30) * volMul;
  
     String trend;

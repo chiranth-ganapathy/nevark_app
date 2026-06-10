@@ -27,6 +27,7 @@ void main() async {
   final seenOnboarding = prefs.getBool('seen_onboarding') ?? false;
 
   await DisplayMode.load();
+  await DisplayMode.loadTheme();
   await AlertStore.instance.load();
 
   // Show UI immediately — market engine starts in background
@@ -46,13 +47,20 @@ class NeVarkApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'NeVark',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
-      home: SplashScreen(seenOnboarding: seenOnboarding),
-      themeAnimationDuration: const Duration(milliseconds: 280),
-      themeAnimationCurve: Curves.easeOutCubic,
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: DisplayMode.themeMode,
+      builder: (context, themeMode, _) {
+        return MaterialApp(
+          title: 'NeVark',
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.light,
+          darkTheme: AppTheme.dark,
+          themeMode: themeMode,
+          home: SplashScreen(seenOnboarding: seenOnboarding),
+          themeAnimationDuration: const Duration(milliseconds: 280),
+          themeAnimationCurve: Curves.easeOutCubic,
+        );
+      },
     );
   }
 }

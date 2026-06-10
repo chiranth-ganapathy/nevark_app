@@ -8,6 +8,7 @@ import '../../features/news/models/news_item.dart';
 class NewsSentimentCache {
   static const _cacheKey = 'news_cache_v5';
   static List<_NewsRow>? _rows;
+  // ignore: unused_field
   static DateTime? _loadedAt;
 
   static Future<void> preload() async {

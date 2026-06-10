@@ -111,7 +111,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
             Container(
               width: 7,
               height: 7,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 color: AppColors.green,
                 shape: BoxShape.circle,
               ),
@@ -120,7 +120,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
         actions: [
           ValueListenableBuilder<bool>(
             valueListenable: DisplayMode.isProfessional,
-            builder: (_, pro, __) => IconButton(
+            builder: (_, pro, _) => IconButton(
               tooltip: pro ? 'Switch to Beginner' : 'Switch to Professional',
               icon: Icon(
                 pro ? Icons.school_rounded : Icons.analytics_outlined,
@@ -426,12 +426,12 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
                     ],
                   ),
                   const SizedBox(height: 6),
-                  ClipRRect(
+                    ClipRRect(
                     borderRadius: BorderRadius.circular(3),
                     child: LinearProgressIndicator(
                       value: q.high > q.low ? (q.ltp - q.low) / (q.high - q.low) : 0.5,
                       backgroundColor: AppColors.red.withOpacity(0.3),
-                      valueColor: const AlwaysStoppedAnimation(AppColors.green),
+                      valueColor: AlwaysStoppedAnimation(AppColors.green),
                       minHeight: 6,
                     ),
                   ),
@@ -475,7 +475,7 @@ class _StockDetailScreenState extends State<StockDetailScreen> {
           ),
           child: Text(
             isPro ? 'Professional mode' : 'Beginner mode',
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Space Mono',
               fontSize: 10,
               color: AppColors.cyan,
@@ -677,7 +677,7 @@ class _CardSection extends StatelessWidget {
                 ),
               ),
             ),
-            const Divider(color: AppColors.cardBorder, height: 1),
+            Divider(color: AppColors.cardBorder, height: 1),
             ...children,
           ],
         ),

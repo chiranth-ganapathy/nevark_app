@@ -188,7 +188,7 @@ class _NewsAppBar extends StatelessWidget {
       ),
       actions: [
         IconButton(
-          icon: const Icon(Icons.refresh_rounded, color: AppColors.cyan),
+          icon: Icon(Icons.refresh_rounded, color: AppColors.cyan),
           tooltip: 'Refresh news',
           onPressed: onRefresh,
         ),
@@ -757,7 +757,7 @@ class _ErrorState extends StatelessWidget {
               border: Border.all(color: AppColors.red.withValues(alpha: 0.3)),
             ),
             child:
-                const Icon(Icons.wifi_off_rounded, color: AppColors.red, size: 32),
+                Icon(Icons.wifi_off_rounded, color: AppColors.red, size: 32),
           ),
           const SizedBox(height: 20),
           const Text(

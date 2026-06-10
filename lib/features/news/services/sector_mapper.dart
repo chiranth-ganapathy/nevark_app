@@ -184,14 +184,23 @@ class SectorMapper {
   /// Given the combined text (title + description) of an article, returns
   /// the best-matching sector and a list of related NSE symbols.
   static SectorMapResult map(String text) {
-    final lower = text.toLowerCase();
+    // 1. Clean common disclaimers containing the word "reliance"
+    String lower = text.toLowerCase()
+        .replaceAll(RegExp(r'\bundue reliance\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\breliance on\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\breliance should\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\bplace reliance\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\bplaced reliance\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\bno reliance\b', caseSensitive: false), '')
+        .replaceAll(RegExp(r'\breliance is\b', caseSensitive: false), '');
 
     final Map<String, int> sectorScore = {};
     final Set<String> foundSymbols = {};
 
-    // ── Step 1: match company names ─────────────────────────────────────
+    // ── Step 1: match company names as whole words ──────────────────────
     _nameToSymbol.forEach((name, symbol) {
-      if (lower.contains(name)) {
+      final regex = RegExp(r'\b' + RegExp.escape(name) + r'\b');
+      if (regex.hasMatch(lower)) {
         foundSymbols.add(symbol);
         // Find which sector this symbol belongs to
         kSectorStocks.forEach((sector, stocks) {
@@ -202,7 +211,7 @@ class SectorMapper {
       }
     });
 
-    // ── Step 2: match NSE ticker symbols (e.g. TCS, INFY) ───────────────
+    // ── Step 2: match NSE ticker symbols as whole words ─────────────────
     kSectorStocks.forEach((sector, stocks) {
       for (final sym in stocks) {
         // Match the symbol as a whole word
@@ -214,10 +223,11 @@ class SectorMapper {
       }
     });
 
-    // ── Step 3: match sector keywords ───────────────────────────────────
+    // ── Step 3: match sector keywords as whole words ────────────────────
     _sectorKeywords.forEach((sector, keywords) {
       for (final kw in keywords) {
-        if (lower.contains(kw)) {
+        final regex = RegExp(r'\b' + RegExp.escape(kw) + r'\b');
+        if (regex.hasMatch(lower)) {
           sectorScore[sector] = (sectorScore[sector] ?? 0) + 1;
         }
       }

@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ],
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.trending_up_rounded,
                   color: AppColors.cyan,
                   size: 40,

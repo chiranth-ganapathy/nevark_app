@@ -54,7 +54,7 @@ class _ScreenerScreenState extends State<ScreenerScreen> {
       title: const Text('Stock Screener', style: TextStyle(fontFamily: 'Syne',
         fontWeight: FontWeight.w800, color: Colors.white)),
       actions: [IconButton(
-        icon: const Icon(Icons.refresh_rounded, color: AppColors.cyan),
+        icon: Icon(Icons.refresh_rounded, color: AppColors.cyan),
         onPressed: _load)]),
     body: Column(children: [
       // Filter chips
@@ -83,7 +83,7 @@ class _ScreenerScreenState extends State<ScreenerScreen> {
  
       // List
       Expanded(child: _loading
-        ? const Center(child: CircularProgressIndicator(
+        ? Center(child: CircularProgressIndicator(
             color: AppColors.cyan, strokeWidth: 1.5))
         : _error != null
           ? Center(child: Text(_error!, style: TextStyle(color: AppColors.red)))

@@ -65,7 +65,7 @@ class MarketStore extends ChangeNotifier {
       for (final q in quotes) {
         if (q.symbol.isEmpty || q.ltp <= 0) continue;
 
-        if (kPrimaryIndexKeys.contains(q.symbol)) {
+        if (kAllIndexKeys.contains(q.symbol)) {
           _indices[q.symbol] = q;
         } else {
           final idx = _stocks.indexWhere((s) => s.symbol == q.symbol);

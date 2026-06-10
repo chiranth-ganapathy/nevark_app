@@ -94,16 +94,30 @@ class ChatbotEngine {
 
   static Future<String> _stockAnalysis(String symbol) async {
     final sym = symbol.toUpperCase();
-    final intel = IntelligenceEngine.stock(sym);
-    if (intel == null) return _dataUnavailable(sym);
+    final q = MarketStore.instance.quote(sym);
+    if (q == null || q.ltp <= 0) return _dataUnavailable(sym);
 
-    final buf = StringBuffer('📈 ${IntelligenceEngine.formatStockBrief(intel)}\n\n');
-    buf.writeln('Technical (plain English)');
-    buf.writeln('• ${intel.narratives.rsi}');
-    buf.writeln('• ${intel.narratives.ema}');
-    buf.writeln('• ${intel.narratives.macd}');
-    buf.writeln('• ${intel.narratives.bollinger}');
-    buf.writeln('• ${intel.narratives.volume}');
+    final pred = StockPrediction.fromQuote(q);
+    final buf = StringBuffer();
+    buf.writeln('📈 $sym — AI Stock Research Assistant');
+    buf.writeln('');
+    buf.writeln('Name: $sym');
+    buf.writeln('Price: ${q.priceStr} (${q.changePctStr})');
+    buf.writeln('Signal: ${pred.signalStr}');
+    buf.writeln('Confidence: ${pred.confidence}%');
+    buf.writeln('Risk: ${pred.risk}');
+    buf.writeln('Trend: ${pred.forecast.trend}');
+    buf.writeln('');
+    buf.writeln('Reason:');
+    buf.writeln(pred.reason);
+    buf.writeln('');
+    buf.writeln('Forecast:');
+    buf.writeln('  • 5D: ${pred.forecast.price5dStr}');
+    buf.writeln('  • 10D: ${pred.forecast.price10dStr}');
+    buf.writeln('  • 30D: ${pred.forecast.price30dStr}');
+    buf.writeln('  • Expected: ${pred.forecast.trend} (${pred.forecast.confStr} confidence)');
+    buf.writeln('');
+    buf.writeln('Action Hint: ${pred.actionHint}');
 
     return _appendNewsAndDisclaimer(buf, sym);
   }
@@ -115,7 +129,7 @@ class ChatbotEngine {
     final news = await ChatbotNewsHelper.sentimentBlurbForSymbol(symbol);
     if (news != null) {
       buf.writeln('');
-      buf.writeln('News Sentiment');
+      buf.writeln('News Sentiment:');
       buf.writeln(news);
     }
     buf.writeln('');
@@ -130,52 +144,56 @@ class ChatbotEngine {
     }
 
     final p = intel.prediction;
+    final risk = p.confidence >= 70
+        ? 'Moderate'
+        : p.confidence >= 55
+            ? 'Elevated'
+            : 'High';
     final buf = StringBuffer();
-    buf.writeln('📊 $sector Sector');
+    buf.writeln('📊 $sector Sector Analysis');
     buf.writeln('');
+    buf.writeln('Price (Avg Change): ${p.avgChangeStr}');
+    buf.writeln('Signal: ${p.signal}');
+    buf.writeln('Confidence: ${p.confidence}%');
+    buf.writeln('Risk: $risk');
     buf.writeln('Trend: ${p.trend}');
-    buf.writeln('Signal: ${p.signal} · ${p.confidence}% confidence');
-    buf.writeln('Avg move: ${p.avgChangeStr}');
     buf.writeln('');
-    buf.writeln('What happened?');
-    buf.writeln(intel.whatHappened);
-    buf.writeln('');
-    buf.writeln('Why?');
+    buf.writeln('Reason:');
     buf.writeln(p.reason);
     buf.writeln('');
-    buf.writeln('Action');
-    buf.writeln(intel.actionHint);
+    buf.writeln('Forecast:');
+    buf.writeln('• Outlook: Sector is in a ${p.trend.toLowerCase()} phase.');
+    buf.writeln('• Action Hint: ${intel.actionHint}');
+
     if (intel.topStocks.isNotEmpty) {
       buf.writeln('');
-      buf.writeln('Top stocks');
+      buf.writeln('Top Performing Stocks:');
       for (final q in intel.topStocks) {
         final sp = StockPrediction.fromQuote(q);
-        buf.writeln('  ${q.symbol} ${q.changePctStr} · ${sp.signalStr}');
+        buf.writeln('  • ${q.symbol}: ${q.changePctStr} (${sp.signalStr})');
       }
     }
     if (intel.weakStocks.isNotEmpty) {
       buf.writeln('');
-      buf.writeln('Weak stocks');
+      buf.writeln('Weakest Performing Stocks:');
       for (final q in intel.weakStocks) {
         final sp = StockPrediction.fromQuote(q);
-        buf.writeln('  ${q.symbol} ${q.changePctStr} · ${sp.signalStr}');
+        buf.writeln('  • ${q.symbol}: ${q.changePctStr} (${sp.signalStr})');
       }
     }
+
     if (intel.newsSentiment.articleCount > 0) {
       buf.writeln('');
-      buf.writeln('News: ${intel.newsSentiment.summary}');
+      buf.writeln('News Sentiment:');
+      buf.writeln('• ${intel.newsSentiment.summary}');
     }
-    return '${buf.toString()}\n$kSebiDisclaimer';
+
+    buf.writeln('');
+    buf.writeln(kSebiDisclaimer);
+    return buf.toString();
   }
 
   static String _indexAnalysis(String index) {
-    if (index == 'SENSEX') {
-      return '📊 SENSEX\n\n'
-          'SENSEX is not in the current Angel One token list.\n'
-          'Use NIFTY 50, BANK NIFTY, or FIN NIFTY for live index data.\n\n'
-          '${_marketOverview()}';
-    }
-
     final q = MarketStore.instance.quote(index);
     if (q == null || q.ltp <= 0) {
       return _dataUnavailable(index);
@@ -186,24 +204,29 @@ class ChatbotEngine {
     final status = MarketStore.instance.marketStatus;
 
     final buf = StringBuffer();
-    buf.writeln('📊 $index');
+    buf.writeln('📊 $index Index Analysis');
     buf.writeln('');
-    buf.writeln('Session: ${status.message}');
-    buf.writeln('Value: ${q.priceStr}');
-    buf.writeln('Change: ${q.changePctStr}');
-    buf.writeln('High / Low: ₹${q.high.toStringAsFixed(2)} / ₹${q.low.toStringAsFixed(2)}');
-    buf.writeln('');
-    buf.writeln('Outlook Signal: ${pred.signalStr} (${pred.confidence}%)');
-    buf.writeln('Trend: ${pred.forecast.trend}');
+    buf.writeln('Price: ${q.priceStr} (${q.changePctStr})');
+    buf.writeln('Signal: ${pred.signalStr}');
+    buf.writeln('Confidence: ${pred.confidence}%');
     buf.writeln('Risk: ${pred.risk}');
+    buf.writeln('Trend: ${pred.forecast.trend}');
     buf.writeln('');
-    buf.writeln('Technical');
-    buf.writeln('• RSI ${ind.rsi.toStringAsFixed(0)} — ${_plainRsi(ind.rsi)}');
-    buf.writeln('• ${pred.macdLabel}');
-    buf.writeln('• ${pred.maLabel}');
-    buf.writeln('');
-    buf.writeln('Analysis');
+    buf.writeln('Reason:');
     buf.writeln(pred.reason);
+    buf.writeln('');
+    buf.writeln('Technical Details:');
+    buf.writeln('• Session: ${status.message}');
+    buf.writeln('• High / Low: ₹${q.high.toStringAsFixed(2)} / ₹${q.low.toStringAsFixed(2)}');
+    buf.writeln('• RSI: ${ind.rsi.toStringAsFixed(0)} — ${_plainRsi(ind.rsi)}');
+    buf.writeln('• MACD: ${pred.macdLabel}');
+    buf.writeln('• Moving Averages: ${pred.maLabel}');
+    buf.writeln('');
+    buf.writeln('Forecast:');
+    buf.writeln('• 5D Forecast: ${pred.forecast.price5dStr}');
+    buf.writeln('• 10D Forecast: ${pred.forecast.price10dStr}');
+    buf.writeln('• 30D Forecast: ${pred.forecast.price30dStr}');
+    buf.writeln('• Expected Trend: ${pred.forecast.trend} (${pred.forecast.confStr} confidence)');
     buf.writeln('');
     buf.writeln(kSebiDisclaimer);
     return buf.toString();
@@ -461,6 +484,7 @@ class ChatbotEngine {
     return 'Oversold — heavy selling; bounce possible, but trend may still be down.';
   }
 
+  // ignore: unused_element
   static String _plainBollinger(double ltp, TechnicalIndicators ind) {
     if (ind.bbUpper <= ind.bbLower) return 'Not enough data for band position.';
     final pos = (ltp - ind.bbLower) / (ind.bbUpper - ind.bbLower);
@@ -473,12 +497,14 @@ class ChatbotEngine {
     return 'Price mid-band — trading inside normal range.';
   }
 
+  // ignore: unused_element
   static String _plainVolatility(double pct) {
     if (pct > 4) return 'High intraday volatility — wider stops advised.';
     if (pct > 2) return 'Moderate volatility — normal for active names.';
     return 'Low volatility — quieter session.';
   }
 
+  // ignore: unused_element
   static String _formatVolume(int v) {
     if (v >= 10000000) return '${(v / 10000000).toStringAsFixed(2)} Cr';
     if (v >= 100000) return '${(v / 100000).toStringAsFixed(2)} L';

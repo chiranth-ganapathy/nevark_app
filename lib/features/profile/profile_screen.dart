@@ -13,6 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -233,7 +234,7 @@ class _ProfileScreenState extends State<ProfileScreen>
             border: Border.all(
                 color: AppColors.cyan.withValues(alpha: 0.5), width: 2),
           ),
-          child: const Icon(Icons.person_rounded,
+            child: Icon(Icons.person_rounded,
               color: AppColors.cyan, size: 30),
         ),
         const SizedBox(width: 16),
@@ -428,7 +429,9 @@ class _ProfileScreenState extends State<ProfileScreen>
         ),
         Divider(
             color: AppColors.cardBorder, height: 1, indent: 54),
-        ListTile(
+        ValueListenableBuilder<ThemeMode>(
+          valueListenable: DisplayMode.themeMode,
+          builder: (context, mode, _) => ListTile(
           leading: Container(
             width: 36,
             height: 36,
@@ -436,13 +439,13 @@ class _ProfileScreenState extends State<ProfileScreen>
               color: AppColors.cyan.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Icon(Icons.dark_mode_rounded,
-                color: AppColors.cyan, size: 18),
+            child: Icon(Icons.dark_mode_rounded,
+              color: AppColors.cyan, size: 18),
           ),
-          title: const Text('Theme',
+            title: Text('Theme',
               style: TextStyle(
-                  color: AppColors.textPrimary, fontSize: 14)),
-          subtitle: Text('Dark fintech glass UI',
+                color: AppColors.textPrimary, fontSize: 14)),
+          subtitle: Text('Dark / Light / System',
               style: TextStyle(
                   fontFamily: 'Space Mono',
                   fontSize: 10,
@@ -456,13 +459,19 @@ class _ProfileScreenState extends State<ProfileScreen>
               border:
                   Border.all(color: AppColors.cyan.withValues(alpha: 0.3)),
             ),
-            child: Text('DARK',
+            child: Text(mode == ThemeMode.dark
+                ? 'DARK'
+                : mode == ThemeMode.light
+                    ? 'LIGHT'
+                    : 'SYSTEM',
                 style: TextStyle(
                   fontFamily: 'Space Mono',
                   fontSize: 9,
                   color: AppColors.cyan,
                 )),
           ),
+          onTap: () => _showThemeOptions(context),
+        ),
         ),
       ]),
     );
@@ -501,16 +510,11 @@ class _ProfileScreenState extends State<ProfileScreen>
         'Share App',
         Icons.share_rounded,
         AppColors.cyan,
-        () {
+        () async {
           HapticFeedback.lightImpact();
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: const Text('Share feature coming soon!',
-                  style: TextStyle(fontFamily: 'Space Mono')),
-              backgroundColor: AppColors.surface2,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
+          final pkg = await PackageInfo.fromPlatform();
+          final text = 'Check out NeVark (${pkg.version}) — AI stock research app.\nhttps://nevark.in';
+          await Share.share(text);
         },
       ),
       _TileData(
@@ -656,6 +660,67 @@ class _ProfileScreenState extends State<ProfileScreen>
     );
   }
 
+  void _showThemeOptions(BuildContext context) {
+    final current = DisplayMode.themeMode.value;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            ListTile(
+              title: const Text('Use system theme'),
+              leading: Radio<ThemeMode>(
+                value: ThemeMode.system,
+                groupValue: current,
+                onChanged: (v) {
+                  if (v != null) DisplayMode.setThemeMode(v);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                DisplayMode.setThemeMode(ThemeMode.system);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Light'),
+              leading: Radio<ThemeMode>(
+                value: ThemeMode.light,
+                groupValue: current,
+                onChanged: (v) {
+                  if (v != null) DisplayMode.setThemeMode(v);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                DisplayMode.setThemeMode(ThemeMode.light);
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: const Text('Dark'),
+              leading: Radio<ThemeMode>(
+                value: ThemeMode.dark,
+                groupValue: current,
+                onChanged: (v) {
+                  if (v != null) DisplayMode.setThemeMode(v);
+                  Navigator.pop(context);
+                },
+              ),
+              onTap: () {
+                DisplayMode.setThemeMode(ThemeMode.dark);
+                Navigator.pop(context);
+              },
+            ),
+          ]),
+        );
+      },
+    );
+  }
+
   // ── Helpers ───────────────────────────────────────────────────────────────
 
   static String _monthName(int m) => const [
@@ -783,9 +848,9 @@ class _ToggleTile extends StatelessWidget {
         ),
         child: Icon(icon, color: iconColor, size: 18),
       ),
-      title: Text(title,
+        title: Text(title,
           style:
-              const TextStyle(color: AppColors.textPrimary, fontSize: 14)),
+            TextStyle(color: AppColors.textPrimary, fontSize: 14)),
       subtitle: Text(subtitle,
           style: TextStyle(
               fontFamily: 'Space Mono',
@@ -865,7 +930,7 @@ class _TileGroup extends StatelessWidget {
                       ),
                       child: Text(
                         '${t.badge}',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontFamily: 'Space Mono',
                           fontSize: 10,
                           fontWeight: FontWeight.w700,

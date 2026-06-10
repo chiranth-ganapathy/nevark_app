@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
+import '../../../services/api_service.dart';
 import '../models/news_item.dart';
 import 'news_pipeline_log.dart';
 import 'sector_mapper.dart';
@@ -59,6 +60,7 @@ class YahooNewsProvider {
     'BAJAJ-AUTO.NS',
   ];
 
+  // ignore: unused_element
   static List<String> get _allFeedUrls {
     final urls = <String>[..._coreFeedUrls];
     for (final sym in _stockFeedSymbols) {
@@ -76,7 +78,8 @@ class YahooNewsProvider {
     String? lastError;
     int successCount = 0;
 
-    for (final url in _allFeedUrls) {
+    // 1. Fetch core feeds
+    for (final url in _coreFeedUrls) {
       try {
         final items = await _fetchFeed(url);
         for (final item in items) {
@@ -92,16 +95,36 @@ class YahooNewsProvider {
         }
         successCount++;
         NewsPipelineLog.parsed(
-          'Yahoo',
+          'Yahoo Core',
           items.length,
           sampleTitle: items.isNotEmpty ? items.first.title : null,
         );
       } catch (e) {
         lastError = e.toString();
-        // Don't log every stock feed failure individually — too noisy
-        if (_coreFeedUrls.contains(url)) {
-          debugPrint('[YahooNews] core feed failed: $url → $e');
+        debugPrint('[YahooNews] core feed failed: $url → $e');
+      }
+    }
+
+    // 2. Fetch stock-specific feeds and pass their ticker context
+    for (final sym in _stockFeedSymbols) {
+      final cleanSymbol = sym.replaceAll('.NS', '');
+      final url = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=$sym&region=IN&lang=en-IN';
+      try {
+        final items = await _fetchFeed(url, feedSymbol: cleanSymbol);
+        for (final item in items) {
+          if (item.title.isEmpty) continue;
+          // Deduplicate by URL first, then title
+          final key = item.url.isNotEmpty ? item.url : item.title;
+          if (seenKeys.contains(key)) continue;
+          seenKeys.add(key);
+          // Also prevent near-duplicate titles
+          if (item.url.isEmpty && seenKeys.contains(item.title)) continue;
+          if (item.url.isNotEmpty) seenKeys.add(item.title);
+          results.add(item);
         }
+        successCount++;
+      } catch (e) {
+        lastError = e.toString();
       }
     }
 
@@ -119,7 +142,7 @@ class YahooNewsProvider {
     return results;
   }
 
-  Future<List<NewsItem>> _fetchFeed(String url) async {
+  Future<List<NewsItem>> _fetchFeed(String url, {String? feedSymbol}) async {
     final resp = await http
         .get(
           Uri.parse(url),
@@ -140,10 +163,10 @@ class YahooNewsProvider {
       throw Exception('Yahoo RSS returned empty body');
     }
 
-    return _parseRss(resp.body);
+    return _parseRss(resp.body, feedSymbol: feedSymbol);
   }
 
-  static List<NewsItem> _parseRss(String xml) {
+  static List<NewsItem> _parseRss(String xml, {String? feedSymbol}) {
     final items = <NewsItem>[];
     final itemBlocks = RegExp(
       r'<item[^>]*>([\s\S]*?)</item>',
@@ -164,6 +187,23 @@ class YahooNewsProvider {
       final sent = SentimentEngine.analyse(combined);
       final map = SectorMapper.map(combined);
 
+      String sector = map.sector;
+      final stocks = List<String>.from(map.relatedStocks);
+
+      if (feedSymbol != null) {
+        if (!stocks.contains(feedSymbol)) {
+          stocks.add(feedSymbol);
+        }
+        if (sector == 'General') {
+          for (final entry in kSectorStocks.entries) {
+            if (entry.value.contains(feedSymbol)) {
+              sector = entry.key;
+              break;
+            }
+          }
+        }
+      }
+
       items.add(NewsItem(
         title: _decode(title),
         description: _decode(desc),
@@ -173,8 +213,8 @@ class YahooNewsProvider {
         publishedAt: _parseRssDate(pubDate),
         sentiment: sent.sentiment,
         sentimentScore: sent.score,
-        sector: map.sector,
-        relatedStocks: map.relatedStocks,
+        sector: sector,
+        relatedStocks: stocks,
       ));
     }
     return items;
@@ -183,6 +223,7 @@ class YahooNewsProvider {
   /// Extract text from an XML tag, handling CDATA sections.
   static String _tag(String xml, String tag) {
     // Try CDATA first: <tag><![CDATA[content]]></tag>
+    // In a non-raw Dart string we need \\ to produce a single \ for regex.
     final cdataPattern = RegExp(
       '<$tag[^>]*><!\\[CDATA\\[([\\s\\S]*?)\\]\\]></$tag>',
       caseSensitive: false,
@@ -204,6 +245,7 @@ class YahooNewsProvider {
 
     return '';
   }
+
 
   /// Try to extract an image URL from media:content, media:thumbnail,
   /// or enclosure tags within the RSS item.

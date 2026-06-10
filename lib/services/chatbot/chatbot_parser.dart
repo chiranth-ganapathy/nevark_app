@@ -305,7 +305,7 @@ class ChatbotParser {
     }
 
     for (final sym in kNseTokens.keys) {
-      if (kPrimaryIndexKeys.contains(sym)) continue;
+      if (kAllIndexKeys.contains(sym)) continue;
       if (_wordMatch(q, sym.toLowerCase()) && !found.contains(sym)) {
         found.add(sym);
       }
@@ -338,9 +338,16 @@ class ChatbotParser {
 
   static String? resolveIndex(String q) {
     if (q.contains('sensex')) return 'SENSEX';
-    if (q.contains('banknifty') || q.contains('bank nifty')) return 'BANKNIFTY';
+    if (q.contains('nifty next 50') || q.contains('nifty next')) return 'NIFTY_NEXT_50';
+    if (q.contains('nifty midcap') || q.contains('midcap')) return 'NIFTY_MIDCAP';
+    if (q.contains('nifty smallcap') || q.contains('smallcap')) return 'NIFTY_SMALLCAP';
+    if (q.contains('nifty it')) return 'NIFTY_IT';
+    if (q.contains('nifty pharma')) return 'NIFTY_PHARMA';
+    if (q.contains('nifty auto')) return 'NIFTY_AUTO';
+    if (q.contains('nifty fmcg')) return 'NIFTY_FMCG';
+    if (q.contains('banknifty') || q.contains('bank nifty') || q.contains('nifty bank')) return 'BANKNIFTY';
     if (q.contains('finnifty') || q.contains('fin nifty')) return 'FINNIFTY';
-    if (q.contains('nifty')) return 'NIFTY';
+    if (q.contains('nifty 50') || q.contains('nifty')) return 'NIFTY';
     return null;
   }
 

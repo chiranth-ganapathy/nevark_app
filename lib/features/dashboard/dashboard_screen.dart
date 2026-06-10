@@ -423,7 +423,7 @@ class _IndicesRow extends StatelessWidget {
               onTap: onViewAll,
               child: Text(
                 'View all (${indices.length})',
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Space Mono',
                   fontSize: 10,
                   color: AppColors.cyan,

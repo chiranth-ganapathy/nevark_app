@@ -135,7 +135,7 @@ class AuthService extends StatelessWidget {
                         width: 1.5,
                       ),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.trending_up_rounded,
                       color: AppColors.cyan,
                       size: 40,
@@ -153,7 +153,7 @@ class AuthService extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 48),
-                  const SizedBox(
+                  SizedBox(
                     width: 24,
                     height: 24,
                     child: CircularProgressIndicator(

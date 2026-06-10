@@ -167,7 +167,7 @@ class _RulesTab extends StatelessWidget {
                       AlertStore.instance.setRuleEnabled(r.id, v),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.delete_outline,
+                  icon: Icon(Icons.delete_outline,
                       color: AppColors.red, size: 20),
                   onPressed: () => AlertStore.instance.removeRule(r.id),
                 ),
@@ -359,7 +359,7 @@ class _CreateAlertSheetState extends State<_CreateAlertSheet> {
               fillColor: AppColors.surface2,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(10),
-                borderSide: const BorderSide(color: AppColors.cardBorder),
+                borderSide: BorderSide(color: AppColors.cardBorder),
               ),
             ),
           ),
@@ -395,7 +395,7 @@ class _CreateAlertSheetState extends State<_CreateAlertSheet> {
           if (_type == AlertType.signalChange) ...[
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              value: _signalTarget,
+              initialValue: _signalTarget,
               dropdownColor: AppColors.surface,
               style: const TextStyle(color: Colors.white),
               decoration: InputDecoration(

@@ -80,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen>
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: AppColors.cyan, width: 1.5),
+        borderSide: BorderSide(color: AppColors.cyan, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
@@ -171,8 +171,8 @@ class _SignupScreenState extends State<SignupScreen>
                       // Name
                       TextFormField(
                         controller: _name,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary, fontSize: 14),
+                        style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 14),
                         decoration: _inputDeco(
                             'Full name', Icons.person_outline_rounded),
                         validator: (v) => (v == null || v.isEmpty)
@@ -185,8 +185,8 @@ class _SignupScreenState extends State<SignupScreen>
                       // Email
                       TextFormField(
                         controller: _email,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary, fontSize: 14),
+                        style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 14),
                         decoration: _inputDeco(
                             'Email address', Icons.mail_outline_rounded),
                         keyboardType: TextInputType.emailAddress,
@@ -200,8 +200,8 @@ class _SignupScreenState extends State<SignupScreen>
                       TextFormField(
                         controller: _password,
                         obscureText: _obscure,
-                        style: const TextStyle(
-                            color: AppColors.textPrimary, fontSize: 14),
+                        style: TextStyle(
+                          color: AppColors.textPrimary, fontSize: 14),
                         decoration: _inputDeco(
                           'Password (min 6 chars)',
                           Icons.lock_outline_rounded,
@@ -304,7 +304,7 @@ class _SignupScreenState extends State<SignupScreen>
                           ),
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
-                            child: const Text(
+                            child: Text(
                               'Sign in',
                               style: TextStyle(
                                 color: AppColors.cyan,

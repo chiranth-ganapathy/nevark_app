@@ -308,50 +308,72 @@ class _SectorDetailScreenState extends State<SectorDetailScreen> {
         ),
       );
 
-  Widget _metricsGrid(SectorData s, SectorPrediction? pred) => Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(color: AppColors.cardBorder),
-        ),
+  Widget _metricsGrid(SectorData s, SectorPrediction? pred) {
+    final buySignals = pred != null
+        ? '${pred.stockPredictions.where((p) => p.signalStr == 'BUY').length}/${pred.stockPredictions.length}'
+        : '--';
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: AppColors.cardBorder),
+      ),
+      child: IntrinsicHeight(
         child: Row(
           children: [
-            _metricTile('Sector RSI', s.avgRsi.toStringAsFixed(0)),
-            _metricTile('Strength', s.strength),
-            _metricTile('Momentum', s.momentum),
-            if (pred != null)
-              _metricTile(
-                'BUY signals',
-                '${pred.stockPredictions.where((p) => p.signalStr == 'BUY').length}/${pred.stockPredictions.length}',
-              ),
+            _metricTile('RSI', s.avgRsi.toStringAsFixed(0)),
+            _divider(),
+            _metricTile('STRENGTH', s.strength),
+            _divider(),
+            _metricTile('MOMENTUM', s.momentum),
+            _divider(),
+            _metricTile('BUY SIGNALS', buySignals),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _divider() => VerticalDivider(
+        color: AppColors.cardBorder,
+        width: 1,
+        thickness: 1,
       );
 
   Widget _metricTile(String label, String value) => Expanded(
-        child: Column(
-          children: [
-            Text(
-              value,
-              style: const TextStyle(
-                fontFamily: 'Syne',
-                fontSize: 14,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                value.isEmpty ? '--' : value,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontFamily: 'Syne',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Space Mono',
-                fontSize: 8,
-                color: AppColors.textMuted,
+              const SizedBox(height: 6),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Space Mono',
+                  fontSize: 9,
+                  color: AppColors.textMuted,
+                  letterSpacing: 0.6,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 
@@ -385,14 +407,14 @@ class _SectorDetailScreenState extends State<SectorDetailScreen> {
           if (intel.topStocks.isNotEmpty) ...[
             const SizedBox(height: 10),
             Text('Top: ${intel.topStocks.map((q) => "${q.symbol} ${q.changePctStr}").join(" · ")}',
-                style: const TextStyle(fontFamily: 'Space Mono', fontSize: 10, color: AppColors.green)),
+              style: TextStyle(fontFamily: 'Space Mono', fontSize: 10, color: AppColors.green)),
           ],
           if (intel.weakStocks.isNotEmpty &&
               intel.weakStocks.first.changePercent < 0) ...[
             const SizedBox(height: 6),
             Text(
-                'Weak: ${intel.weakStocks.map((q) => "${q.symbol} ${q.changePctStr}").join(" · ")}',
-                style: const TextStyle(fontFamily: 'Space Mono', fontSize: 10, color: AppColors.red)),
+              'Weak: ${intel.weakStocks.map((q) => "${q.symbol} ${q.changePctStr}").join(" · ")}',
+              style: TextStyle(fontFamily: 'Space Mono', fontSize: 10, color: AppColors.red)),
           ],
           if (intel.newsSentiment.articleCount > 0) ...[
             const SizedBox(height: 8),

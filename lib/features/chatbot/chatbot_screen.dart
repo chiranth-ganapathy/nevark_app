@@ -59,7 +59,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
             decoration: BoxDecoration(
               color: AppColors.cyan.withOpacity(0.15),
               borderRadius: BorderRadius.circular(8)),
-            child: const Icon(Icons.smart_toy_outlined,
+            child: Icon(Icons.smart_toy_outlined,
               color: AppColors.cyan, size: 18)),
           const SizedBox(width: 10),
           Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -73,7 +73,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
         ]),
         actions: [
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.textMuted),
+            icon: Icon(Icons.delete_outline, color: AppColors.textMuted),
             onPressed: () => ref.read(chatProvider).clear()),
         ],
       ),
@@ -127,7 +127,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
               child: TextField(
                 controller: _ctrl,
                 onSubmitted: (_) => _send(),
-                style: const TextStyle(
+                style: TextStyle(
                   color: AppColors.textPrimary, fontSize: 14),
                 decoration: InputDecoration(
                   hintText: 'Stock, sector, RSI, compare…',
@@ -137,17 +137,17 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
                     fontSize: 12),
                   filled: true,
                   fillColor: AppColors.surface2,
-                  border: OutlineInputBorder(
+                    border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: AppColors.cardBorder)),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: AppColors.cardBorder)),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(
+                    borderSide: BorderSide(
                       color: AppColors.cyan, width: 1.5)),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: 12, vertical: 10)),
@@ -161,7 +161,7 @@ class _ChatbotScreenState extends ConsumerState<ChatbotScreen> {
                 decoration: BoxDecoration(
                   color: AppColors.cyan,
                   borderRadius: BorderRadius.circular(8)),
-                child: const Icon(Icons.send_rounded,
+                child: Icon(Icons.send_rounded,
                   color: AppColors.bg, size: 18)),
             ),
           ]),
@@ -278,7 +278,7 @@ class _SuggestionChip extends StatelessWidget {
           border: Border.all(color: AppColors.cardBorder)),
         child: Center(
           child: Text(text,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Space Mono',
               fontSize: 11,
               color: AppColors.cyan)),
