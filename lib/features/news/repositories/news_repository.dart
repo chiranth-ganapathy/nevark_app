@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../models/news_item.dart';
+import '../services/fii_dii_intelligence.dart';
 import '../services/news_pipeline_log.dart';
 import '../services/news_service.dart';
 
@@ -110,4 +111,13 @@ final trendingNewsProvider = Provider<AsyncValue<List<NewsItem>>>((ref) {
   return ref.watch(newsRepositoryProvider).whenData(
         (items) => items.take(10).toList(),
       );
+});
+
+final fiiDiiSnapshotProvider = FutureProvider<FiiDiiSnapshot>((ref) async {
+  return FiiDiiService.fetchSnapshot();
+});
+
+final institutionalFlowNewsProvider = FutureProvider<List<NewsItem>>((ref) async {
+  final snapshot = await ref.watch(fiiDiiSnapshotProvider.future);
+  return snapshot.newsItems;
 });

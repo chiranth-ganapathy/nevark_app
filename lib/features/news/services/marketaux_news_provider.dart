@@ -110,6 +110,33 @@ class MarketauxNewsProvider {
     return results;
   }
 
+  Future<List<NewsItem>> fetchInstitutional() async {
+    if (!NewsConfig.hasApiKey) {
+      throw Exception('Marketaux API key missing');
+    }
+
+    final results = <NewsItem>[];
+    final searches = [
+      '"FII" OR "DII"',
+      '"foreign investors" OR "domestic institutions"',
+      '"institutional flow" OR "fund flow"',
+      '"market participation" AND india',
+    ];
+
+    for (final search in searches) {
+      final items = await _fetchWithParams({
+        'search': search,
+        'language': 'en',
+        'limit': '12',
+        'countries': 'in',
+      });
+      _mergeUnique(results, items);
+    }
+
+    results.sort(_sortStockAware);
+    return results;
+  }
+
   int _sortStockAware(NewsItem a, NewsItem b) {
     final aStock = a.relatedStocks.any(_isTrackedSymbol) ? 1 : 0;
     final bStock = b.relatedStocks.any(_isTrackedSymbol) ? 1 : 0;

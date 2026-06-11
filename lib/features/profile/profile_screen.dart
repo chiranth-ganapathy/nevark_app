@@ -25,7 +25,6 @@ import '../../services/market_store.dart';
 import '../alert/alert_screen.dart';
 import '../auth/auth_service.dart';
 import '../fii/fii_screen.dart';
-import '../macro/macro_screen.dart';
 import '../screener/screener_screen.dart';
 import 'about_screen.dart';
 import 'legal_screen.dart';
@@ -355,13 +354,6 @@ class _ProfileScreenState extends State<ProfileScreen>
         () => Navigator.of(context)
             .push(MaterialPageRoute(builder: (_) => AlertsScreen())),
         badge: AlertStore.instance.unreadCount,
-      ),
-      _TileData(
-        'Macro Indicators',
-        Icons.public,
-        AppColors.cyan,
-        () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (_) => MacroScreen())),
       ),
       _TileData(
         'FII / DII Activity',
